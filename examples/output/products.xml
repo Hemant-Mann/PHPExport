@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <row>
+        <id>1</id>
+        <category>Mobiles and Tablets</category>
+        <name>Moto G</name>
+        <price>7000</price>
+        <description>
+            <p>Moto G in good condition purchased in January 2014.</p>
+            <p> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras pulvinar arcu pulvinar, dictum turpis vel, semper risus. Curabitur ac augue et felis tempor molestie. Fusce ligula libero, dignissim eget ultrices ut, varius sit amet massa. Curabitur luctus nulla non lacus malesuada, eget elementum arcu lacinia. Fusce et metus non nulla sodales hendrerit. Aenean vitae enim nunc. Integer ultrices erat ac nunc commodo, in mattis mi viverra. Nullam et vehicula orci.</p>
+        </description>
+        <image>moto_g.jpg</image>
+    </row>
+    <row>
+        <id>2</id>
+        <category>Vehicles</category>
+        <name>Indica Vista</name>
+        <price>200000</price>
+        <description>
+            <p>Indica Vista purchased in 2011 travelled a total of 50,000 km. Price is negotiable.</p>
+            <p>Sed accumsan, odio at vestibulum viverra, magna magna cursus mi, a venenatis nibh enim sagittis felis. Suspendisse elit tortor, dictum a est in, sollicitudin laoreet purus. Nullam quis porta tortor. Suspendisse potenti. Suspendisse commodo pulvinar arcu nec fringilla. Pellentesque dignissim scelerisque elit, nec sollicitudin turpis sodales ut. Sed eget elementum augue, non dapibus dui. Aenean non rhoncus nisi. Fusce non sem suscipit, posuere risus et, adipiscing ante. Maecenas nec neque ac urna bibendum viverra eu a eros. Maecenas quis eros a lorem blandit euismod sit amet venenatis leo. Praesent a justo ut turpis tristique volutpat. Sed volutpat felis eget enim laoreet, ac porttitor eros interdum.</p>
+        </description>
+        <image>indica_vista.jpg</image>
+    </row>
+    <row>
+        <id>6</id>
+        <category>Electronics and Computer</category>
+        <name>HP Pavillion</name>
+        <price>37000</price>
+        <description>
+            <p>HP Laptop White in color, 6GB RAM, 2GB NVIDIA GeForce 740M, 1TB Hard Disk, Windows 8.1, 15.6 inches screen in excellent condition.</p>
+            <p>Praesent volutpat, mauris vitae feugiat ullamcorper, quam neque tristique risus, rhoncus tempus tellus metus imperdiet tellus. Duis dolor diam, posuere fermentum est in, convallis condimentum nisl. Suspendisse a nisl vitae velit accumsan pretium sed at quam. Aliquam tincidunt in odio in scelerisque.</p>
+        </description>
+        <image>hp_laptop.jpg</image>
+    </row>
+    <row>
+        <id>10</id>
+        <category>Clothing and Accessories</category>
+        <name>Shirt</name>
+        <price>1000</price>
+        <description>
+            <p>Designer Shirt size XL</p>
+            <p> Nulla faucibus, est a interdum volutpat, sem neque interdum dui, aliquam accumsan velit sapien nec purus. Integer quis massa vel odio viverra molestie. Duis rhoncus posuere felis. Proin lobortis feugiat dui, eget posuere mauris aliquet ut. Integer sagittis lacinia varius. Aenean sit amet nunc mauris. Aenean sed lobortis justo, non pharetra justo.</p>
+        </description>
+        <image>shirt.jpg</image>
+    </row>
+    <row>
+        <id>17</id>
+        <category>Sports Item</category>
+        <name>Football</name>
+        <price>300</price>
+        <description>
+            <p>Reebok Football</p>
+            <p>Ut lobortis elit ut lectus pretium blandit. In hac habitasse platea dictumst. Quisque euismod sit amet augue non malesuada. Etiam accumsan id tellus sed ullamcorper. Vivamus eros urna, auctor id pellentesque a, feugiat at dui. Vivamus sagittis porttitor euismod. Fusce vitae ante quis orci posuere aliquam. Nullam cursus erat eu vehicula volutpat. Maecenas ut magna risus. Nunc eu eleifend massa. </p>
+        </description>
+        <image>football.jpg</image>
+    </row>
+</root>
