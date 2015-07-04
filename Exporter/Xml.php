@@ -1,33 +1,20 @@
 <?php
-namespace Exporter;
+namespace PHPExport\Exporter;
 
 /**
- * Generates XML from a database result, and outputs it as a file or string.
+ * Generates XML from an object, and outputs it as a file or string.
  *
- * Accepts both MySQL Improved and PDO database results.
+ * Accepts object of stdClass | \mysqli_result | \PDOStatement
  * Requires PHP Version 5.3 or later
  *
  * @author Hemant Mann
  * @license http://opensource.org/licenses/MIT MIT */
 
 class Xml extends Base {
-	
-	/**
-	 * @var string Filename/path to be used when XML is output as a file
-	 */
-	protected $filename;
-	
-	/**
-	 * @var string MIME type for when XML is downloaded
-	 */
-	protected $fileType = 'text/xml';
-	
 	/**#@+
-	 * @var bool Indicates if the XML is to be saved to local or download file
+	 * @var bool Indicates if the XML is to be downloaded
 	 */
-	protected $local = false;
 	protected $download = false;
-	/**#@-*/
 	
 	/**
 	 * @var string Name of XML root element (default: root)
@@ -38,7 +25,7 @@ class Xml extends Base {
 	 * @var string Name of XML child elements (default: row)
 	 */
 	protected $rowname = 'row';
-	
+
 	/**
 	 * @var array Stores a list of result fields that are to be created with child elements (paragraphs)
 	 */
@@ -52,8 +39,8 @@ class Xml extends Base {
 	/**
      * This is the class's only public method.
      * 
-     * It takes the database result and generates the output file.
-     * Only the first argument, the database result, is required.
+     * It takes the object and generates the output file.
+     * Only the first argument, the object, is required.
      * The default document root is <root>, and each row is in a
      * <row> element. The database column names are used as the 
      * child elements of each <row>. 
@@ -78,23 +65,24 @@ class Xml extends Base {
 	 * stored in child <p> elements. If there are no new lines, a single
 	 * child <p> element is created.
 	 * 
-	 * @param \MySQLi_Result|\PDOStatement $dbResult Database result resource
+	 * @param array $objects Array of objects of 'stdClass'
 	 * @param string $filename Filename/path of output file, if required
 	 * @param array $options Array of optional settings
 	 */
 	public function __construct(
-	    $dbResult,
+	    $object,
 	    $filename = null,
 	    $options = array(
 		    'local'       => false,
 	        'download'    => false,
 	        'suppress'    => null,
 	        'rootname'    => 'root',
-	        'rowname'     => 'row',
-	        'stripNsplit' => null
+	        'rowname'     => 'row'
 	    )
 	) {
-		parent::__construct($dbResult, $filename, $options);
+		$this->filetype = 'text/xml';
+		parent::__construct($object, $filename, $options);
+
 		if (isset($options['download'])) {
 		    $this->download = $options['download'];
 		}
@@ -112,6 +100,7 @@ class Xml extends Base {
 		    	$this->hasChildren[] = trim($field);
 		    }
 		}
+		
 		$this->generate();
 	}
 		
@@ -127,33 +116,53 @@ class Xml extends Base {
 		$w->setIndentString("    ");
 		$w->startDocument('1.0', 'utf-8');
 		$w->startElement($this->rootname);
-		$row = $this->getRow();
-		$keys = array_keys($row);
-		foreach ($keys as $key) {
-		    $this->isValidName($key);
-		}
-		do {
+		
+		while($object = $this->getRow()) {
+			// Start a new row for each object
 			$w->startElement($this->rowname);
-			foreach ($row as $key => $value) {
-			    if ($this->suppress && in_array($key, $this->suppress)) {
+
+			foreach ($object as $key => $value) {
+				if ($this->suppress && in_array($key, $this->suppress)) {
 			        continue;
 			    }
-				if ($this->hasChildren && in_array($key, $this->hasChildren)) {
-					$stripped = $this->stripHtml($value);
-					$w->startElement($key);
-					foreach ($stripped as $para) {
-						$w->writeElement('p', $para);
+
+				$this->isValidName($key);
+				
+				// Check if the key contains another object
+			    if(is_object($value)) {
+			    	// Start parent element containing rows of each object
+			        $w->startElement($key."s");
+			        // $value is an array of objects
+			        foreach ($value as $obj) {
+			            $w->startElement($key);
+			            foreach ($obj as $field => $val) {
+			            	$this->isValidName($key);
+			                $w->writeElement($field, $val);
+			            }
+			            $w->endElement();
+			        }
+			        $w->endElement();
+			    } else {
+			    	// Write each object's property->value as <key>value</key>
+			    	if ($this->hasChildren && in_array($key, $this->hasChildren)) {
+						$stripped = $this->stripHtml($value);
+						$w->startElement($key);
+						foreach ($stripped as $para) {
+							$w->writeElement('p', $para);
+						}
+						$w->endElement();
+					} else {
+					    $w->writeElement($key, $value);
 					}
-					$w->endElement();
-				} else {
-				    $w->writeElement($key, $value);
-				}
-			} 
+			    }
+			}
 			$w->endElement();
-		} while ($row = $this->getRow());
+		}
+
 		$w->endElement();
 		$w->endDocument();
 		$this->xml = $w->outputMemory();
+		
 		// write to file
 		if (isset($this->filename) && $this->local) {
 		    $success = file_put_contents($this->filename, $this->xml);
@@ -199,5 +208,4 @@ class Xml extends Base {
 		    throw new \Exception("$name is not a valid XML identifier.");
 		}
 	}
-	
 }

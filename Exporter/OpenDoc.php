@@ -1,5 +1,5 @@
 <?php
-namespace Exporter;
+namespace PHPExport\Exporter;
 
 /**
  * Merges XML into an OpenDocument text (.odt) file.

@@ -1,10 +1,10 @@
 <?php
-namespace Exporter;
+namespace PHPExport\Exporter;
 
 /**
  * Provides common functionality for several Exporter classes.
  * 
- * Accepts both MySQL Improved and PDO database results.
+ * Accepts MySQL Improved, PDO database and stdClass objects.
  * Requires PHP Version 5.3 or later
  *
  * @version 1.0.0
@@ -13,9 +13,9 @@ namespace Exporter;
  */
 class Base {
     /**
-     * @var \mysqli_result | \PDOStatement Database result
+     * @var \mysqli_result | \PDOStatement Database | \stdClass objects
      */
-    protected $dbResult;
+    protected $object;
     
     /** 
      * @var string Name of output file
@@ -23,9 +23,9 @@ class Base {
     protected $filename;
     
     /**
-     * @var string Identifies class of $dbResult
+     * @var string Identifies class of $object
      */
-	protected $resultType;
+	protected $objectType;
 	
 	/**
 	 * @var array Array of column names to be omitted from output
@@ -44,16 +44,16 @@ class Base {
 	
 	
 	/**
-	 * @param \mysqli_result | \PDOStatement $dbResult Database result (required)
+	 * @param \mysqli_result | \PDOStatement | \stdClass $object (required)
 	 * @param string $filename Name of output file (optional)
 	 * @param array $options Array of options (optional)
 	 */
 	public function __construct(
-	    $dbResult, 
+	    $object, 
 	    $filename = null, 
 	    $options = array()
 	) {
-		$this->setResultType($dbResult);
+		$this->setObjectType($object);
 		$this->filename = $filename;
 		if (isset($options['suppress'])) {
 			$this->buildSuppressedArray($options['suppress']);
@@ -64,24 +64,32 @@ class Base {
 	}
 	
 	/**
-	 * Sets the $resultType property.
+	 * Sets the $objectType property.
 	 * 
-	 * Throws an exception if the value isn't a database resource of
+	 * Throws an exception if the value isn't a resource of
 	 * an expected type. 
 	 * 
-	 * @param unknown $result First argument passed to constructor
+	 * @param unknown $object First argument passed to constructor
 	 * @throws \Exception
 	 */
-	protected function setResultType($result) {
-		$type = get_class($result);
-		if ($type == 'mysqli_result') {
-			$this->resultType = 'mysqli';
-		} elseif ($type == 'PDOStatement') {
-			$this->resultType = 'pdo';
+	protected function setObjectType($object) {
+		if (is_array($object)) {
+			$type = get_class($object[0]);
+			if ($type == 'stdClass') {
+				$this->objectType = 'stdClass';
+			}
 		} else {
-			throw new \Exception ('Database result must be either mysqli_result or PDOStatement.');
+			$type = get_class($object);
+			if ($type == 'mysqli_result') {
+				$this->objectType = 'mysqli';
+			} elseif ($type == 'PDOStatement') {
+				$this->objectType = 'pdo';
+			} else {
+				throw new \Exception ('Object must be of type mysqli_result or PDOStatement or stdClass');
+			}
 		}
-		$this->dbResult = $result;
+		
+		$this->object = $object;
 	}
 	
 	/**
@@ -113,16 +121,18 @@ class Base {
 	}
 	
 	/**
-	 * Returns the current row of the database result using the appropriate
-	 * method according to the value of the $resultType property.
+	 * Returns the current row of the database result or current db object using the appropriate
+	 * method according to the value of the $objectType property.
 	 * 
-	 * @return array Current row of database result
+	 * @return array|object Current row of database result or an object of stdClass
 	 */
 	protected function getRow() {
-		if ($this->resultType == 'mysqli') {
-			return $this->dbResult->fetch_assoc();
+		if ($this->objectType == 'mysqli') {
+			return $this->object->fetch_assoc();
+		} elseif ($this->objectType == 'pdo') {
+			return $this->object->fetch(\PDO::FETCH_ASSOC);
 		} else {
-			return $this->dbResult->fetch(\PDO::FETCH_ASSOC);
+			return array_shift($this->object);
 		}
 	}
 	
