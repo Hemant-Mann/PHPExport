@@ -1,7 +1,7 @@
 <?php
-require_once '../Exporter.php';
+require_once '../Exporter.php'; /* Autoloader */
 require_once 'includes/products_mysqli.php';
-use Exporter\Xml as Xml;
+use PHPExport\Exporter\Xml as Xml;
 
 if (isset($_POST['download'])) {
     try {

@@ -1,8 +1,8 @@
 <?php
-require_once '../Exporter.php';
+require_once '../Exporter.php'; /* Autoloader */
 require_once 'includes/products_mysqli.php';
-use Exporter\Xml as Xml;
-use Exporter\MsWord as MsWord;
+use PHPExport\Exporter\Xml as Xml;
+use PHPExport\Exporter\MsWord as MsWord;
 
 if (isset($_POST['download'])) {
     try {
@@ -14,10 +14,10 @@ if (isset($_POST['download'])) {
         $dir = __DIR__ . '/';
         
         /* The template created in word processor */
-        $download->setDocTemplate($dir . 'output/products_wordTemplate.docx');
+        $download->setDocTemplate($dir . 'output/word_template.docx');
         
         /* The XSLT stylesheet extracted from word */
-        $download->setXsltSource($dir . 'output/products_word.xslt');
+        $download->setXsltSource($dir . 'output/word.xslt');
         
         /* If there are any images in templates then set path of directory containing images */
         $download->setImageSource($dir . 'images');
