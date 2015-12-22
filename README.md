@@ -6,3 +6,5 @@ The process to make docx and odt files is tricky but with a little help it can b
 
 ### Setup ###
 See Examples folder
+
+Linux Users might need to install php5-xsl extension for XSLTProcessor class to work
